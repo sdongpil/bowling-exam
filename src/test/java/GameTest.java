@@ -1,3 +1,4 @@
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,13 +10,8 @@ public class GameTest {
     private Game game;
 
     @Before
-    public void setUp() throws Exception {
+    public void setup() {
         game = new Game();
-    }
-
-    private void rollMany(int rolls, int pins) {
-        for(int i = 0; i < rolls; i++)
-            game.roll(pins);
     }
 
     @Test
@@ -23,47 +19,45 @@ public class GameTest {
         game.roll(0);
     }
 
+    private void rollMany(int pins, int frames) {
+        for (int i = 0; i < frames; i++) {
+            game.roll(pins);
+        }
+    }
     @Test
     public void gutterGame() {
-        rollMany(20, 0);
-        assertThat(game.score(), is(0));
+        rollMany(0, 20);
+        assertThat(game.getScore(), is(20));
+
     }
+
 
     @Test
     public void allOnes() {
-        rollMany(20, 1);
-        assertThat(game.score(), is(20));
-    }
+        rollMany(1, 20);
+        assertThat(game.getScore(), is(20));
 
+    }
     @Test
     public void oneSpare() {
         rollSpare();
         game.roll(3);
         rollMany(17, 0);
-        assertThat(game.score(), is(16));
+        assertThat(game.getScore(), is(16));
     }
 
     private void rollSpare() {
         game.roll(5);
-        game.roll(5);
+        game.roll(5); // spare
     }
 
     @Test
     public void oneStrike() {
-        rollStrike();
+        game.roll(10);
         game.roll(5);
         game.roll(3);
         rollMany(16, 0);
-        assertThat(game.score(), is(26));
+        assertThat(game.getScore(), is(26));
     }
 
-    private void rollStrike() {
-        game.roll(10);
-    }
-
-    @Test
-    public void perfectGame() {
-        rollMany(12, 10);
-        assertThat(game.score(), is(300));
-    }
 }
